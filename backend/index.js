@@ -6,11 +6,14 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var logger = require('./lib/logger');
 var cors = require('cors');
+require('dotenv').config();
 
 var users = require('./routes/users');
 
 var app = express();
 var log = logger(app);
+
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -21,7 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', users);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
@@ -29,7 +32,7 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   log.error(err);
   res.status(err.status || 500);
   res.json({
@@ -40,7 +43,7 @@ app.use(function(err, req, res, next) {
 
 app.set('port', process.env.PORT || 3000);
 
-var server = app.listen(app.get('port'), function() {
+var server = app.listen(app.get('port'), function () {
   log.info(
     'Express server listening on http://localhost:%d',
     server.address().port
