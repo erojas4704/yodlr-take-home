@@ -1,13 +1,20 @@
+
+import { useState } from "react";
+import { Form, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
+
 export default function SignUp() {
+    const form = useState({ email: "" });
+
     return (<>
         <h1>Yodlr Registration Portal</h1>
-        <form>
-            Email: <input type="email" name="email" /><br />
-            <button type="submit">Submit</button>
-        </form>
-        <p>
-            <a href="/admin.html">Admin Page</a>
-        </p>
+        <Form>
+            <Form.Group controlId="formBasicEmail">
+                <Form.Control type="email" placeholder="E-mail address" value={"conot"}/>
+            </Form.Group>
+        </Form>
+        <Button variant="primary" type="submit">Submit</Button>
+        <p><Link to="/admin">Admin Page</Link></p>
     </ >
     );
 }
