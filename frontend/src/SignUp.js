@@ -2,23 +2,38 @@
 import { useState } from "react";
 import { Form, Button, Col, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { createUser as registerUser } from "./actions/users";
+import APIFeedback from "./APIFeedback";
 
 export default function SignUp() {
+    const [errorMessage, setErrorMessage] = useState("");
+    const dispatch = useDispatch();
+    const currentUserId = useSelector(state => state.user.currentUserId);
+    const newUser = useSelector(state => state.user.newUser);
+    const loading = newUser.loading;
+    const error = newUser.error || errorMessage;
+    
     const [form, setForm] = useState({
         email: "",
         firstName: "",
-        lastName: ""
+        lastName: "",
+        password: "",
+        passwordConfirmation: ""
     });
-
-    const dispatch = useDispatch();
-    const currentUserId = useSelector(state => state.user.currentUserId);
 
     const handleSubmit = e => {
         e.preventDefault();
-        dispatch(registerUser(form));
-        console.log(currentUserId);
+        if (form.password !== form.passwordConfirmation) {
+            setErrorMessage("Passwords do not match.");
+            return;
+        }
+        dispatch(registerUser({
+            email: form.email,
+            firstName: form.firstName,
+            lastName: form.lastName,
+            password: form.password
+        }));
     }
 
     const handleChange = e => {
@@ -51,9 +66,23 @@ export default function SignUp() {
                 <Form.Label>Email address</Form.Label>
                 <Form.Control onChange={handleChange} name="email" type="email" placeholder="E-mail address" value={form.email} />
             </Form.Group>
+            <Row>
+                <Col md>
+                    <Form.Group controlId="password" className="mb-3">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control onChange={handleChange} name="password" type="password" placeholder="Password" value={form.password} />
+                    </Form.Group>
+                </Col>
+                <Col md>
+                    <Form.Group controlId="passwordConfirmation" className="mb-3">
+                        <Form.Label>Confirm</Form.Label>
+                        <Form.Control onChange={handleChange} name="passwordConfirmation" type="password" placeholder="Confirm Password" value={form.passwordConfirmation} />
+                    </Form.Group>
+                </Col>
+            </Row>
+            <APIFeedback error={error} loading={loading} />
             <Button variant="primary" type="submit">Submit</Button>
         </Form>
-        <Link to="/admin">Admin Page</Link>
     </>
     );
 }

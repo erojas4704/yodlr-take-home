@@ -2,10 +2,14 @@ import { useEffect } from "react";
 import { Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUsersFromAPI } from "./actions/users";
+import APIFeedback from "./APIFeedback";
 
 export default function Admin() {
-    const users = useSelector(state => state.user.users);
+    const userData = useSelector(state => state.user.users);
     const dispatch = useDispatch();
+
+    //userData.loading, userData.data, userData.error
+    let usersArr = Object.values(userData.data || {});
 
     useEffect(() => {
         dispatch(getAllUsersFromAPI())
@@ -13,6 +17,7 @@ export default function Admin() {
 
     return (
         <div>
+            <APIFeedback loading={userData.loading} error={userData.error} />
             <h3 className="my-3">Admin Panel</h3>
             <Table striped bordered hover>
                 <thead>
@@ -24,7 +29,7 @@ export default function Admin() {
                     </tr>
                 </thead>
                 <tbody>
-                    {users && users.map(user => (
+                    {usersArr && usersArr.map(user => (
                         <tr key={user.id}>
                             <td>{user.id}</td>
                             <td>{user.firstName}</td>

@@ -15,11 +15,16 @@ export default function NavBar() {
                     <Nav className="me-auto">
                         <NavLink className="nav-link" to="/">Home</NavLink>
                         <NavLink className="nav-link" to="admin">Admin</NavLink>
-                        {currentUserId !== -1 ?
-                            <NavLink className="nav-link" onClick={() => dispatch(logoutUser())} to="/">Log Out</NavLink> :
-                            <NavLink className="nav-link" to="signup">Sign Up</NavLink>
-                        }
                     </Nav>
+                </Navbar.Collapse>
+                <Navbar.Collapse className="justify-content-end">
+                    {currentUserId !== -1 ?
+                        <NavLink className="nav-link" onClick={() => dispatch(logoutUser())} to="/">Log Out</NavLink> :
+                        <>
+                            <NavLink className="nav-link" to="login">Log In</NavLink>
+                            <NavLink className="nav-link" to="signup">Register</NavLink>
+                        </>
+                    }
                 </Navbar.Collapse>
             </Container>
         </Navbar>

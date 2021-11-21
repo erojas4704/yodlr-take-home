@@ -8,6 +8,7 @@ import Admin from "./Admin";
 import SignUp from "./SignUp";
 import Container from "react-bootstrap/Container";
 import NavBar from "./NavBar";
+import LogIn from "./LogIn";
 
 function App() {
   useEffect(() => {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/" exact element={<Home />} />
           <Route path="/admin" exact element={<Admin />} />
           <Route path="/signup" exact element={<SignUp />} />
+          <Route path="/login" exact element={<LogIn />} />
         </Routes>
       </Container>
     </Router>
