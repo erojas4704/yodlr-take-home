@@ -1,0 +1,12 @@
+export const LOAD_USERS = 'LOAD_USERS';
+export const LOAD_USERS_SUCCESS = 'LOAD_USERS_SUCCESS';
+export const LOAD_USERS_FAIL = 'LOAD_USERS_FAIL';
+export const LOAD_USER = 'LOAD_USER';
+export const LOAD_USER_FAIL = 'LOAD_USER_FAIL';
+export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
+export const LOGIN_USER = 'LOGIN_USER';
+export const LOGIN_USER_FAIL = 'LOGIN_USER_FAIL';
+export const LOGIN_USER_SUCCESS = 'LOGIN_USER';
+export const LOGOUT_USER = 'LOGOUT_USER';
+export const CREATE_USER = "CREATE_USER"
+export const CREATE_USER_FAIL = "CREATE_USER_FAIL"

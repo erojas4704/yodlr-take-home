@@ -2,12 +2,12 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect } from "react";
 import axios from "axios";
-import { BrowserRouter as Router, NavLink, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import Admin from "./Admin";
 import SignUp from "./SignUp";
 import Container from "react-bootstrap/Container";
-import { Nav, Navbar } from "react-bootstrap";
+import NavBar from "./NavBar";
 
 function App() {
   useEffect(() => {
@@ -20,18 +20,7 @@ function App() {
 
   return (
     <Router>
-      <Navbar bg="dark" variant="dark">
-        <Container>
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Nav className="me-auto">
-              <Nav.Link> <NavLink to="home">Home</NavLink></Nav.Link>
-              <Nav.Link> <NavLink to="admin">Admin</NavLink></Nav.Link>
-              <Nav.Link> <NavLink to="signup">Sign Up</NavLink></Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+      <NavBar />
       <Container>
         <Routes>
           <Route path="/" exact element={<Home />} />
