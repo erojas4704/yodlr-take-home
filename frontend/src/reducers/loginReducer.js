@@ -1,4 +1,4 @@
-import { LOGIN, LOGIN_FAIL, LOGIN_SUCCESS } from "../actions/types";
+import { CANCEL_LOGIN, LOGIN, LOGIN_FAIL, LOGIN_SUCCESS } from "../actions/types";
 
 const DEFAULT_STATE = {
     loading: false,
@@ -12,7 +12,8 @@ export default function loginReducer(state = DEFAULT_STATE, action) {
             return {
                 ...state,
                 loading: true,
-                data: null
+                data: null,
+                source: action.payload.source
             }
         case LOGIN_SUCCESS:
             return {
@@ -26,6 +27,13 @@ export default function loginReducer(state = DEFAULT_STATE, action) {
                 loading: false,
                 data: null,
                 error: action.payload
+            }
+        case CANCEL_LOGIN:
+            return {
+                ...state,
+                loading: false,
+                data: null,
+                source: null
             }
         default:
             return state;

@@ -3,19 +3,53 @@ var router = express.Router();
 var _ = require('lodash');
 var logger = require('../lib/logger');
 var log = logger();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+require("dotenv").config();
+
+const WORK_FACTOR = Number(process.env.WORK_FACTOR);
+const SECRET_KEY = process.env.SECRET_KEY;
 
 var users = require('../init_data.json').data;
 var curId = _.size(users);
 
 /* GET users listing. */
-router.get('/', function(req, res) {
+router.get('/', function (req, res) {
   res.json(_.toArray(users));
 });
 
+/* POST log in to user. */
+router.post('/login', async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = _.find(users, { email });
+    if (!user) return next(new Error("Invalid username or password"));
+    const match = user.password === undefined || await bcrypt.compare(password, user.password);
+
+    //debugger;
+    if (match) {
+      const token = jwt.sign({
+        id: user.id,
+        userData: user
+      }, SECRET_KEY);
+
+      res.cookie("session", JSON.stringify(token));
+      return res.json(user); //TODO we never send passwords back to the client but for this demo why not
+    }
+
+    return next(new Error("Invalid username or password"));
+  } catch (err) {
+    console.log(err);
+    log.error(err);
+  }
+});
+
 /* Create a new user */
-router.post('/', function(req, res) {
+router.post('/', async (req, res, next) => {
   var user = req.body;
   user.id = curId++;
+  let password = user.password;
+  user.password = await bcrypt.hash(password, WORK_FACTOR);
   if (!user.state) {
     user.state = 'pending';
   }
@@ -25,7 +59,7 @@ router.post('/', function(req, res) {
 });
 
 /* Get a specific user by id */
-router.get('/:id', function(req, res, next) {
+router.get('/:id', function (req, res, next) {
   var user = users[req.params.id];
   if (!user) {
     return next();
@@ -34,7 +68,7 @@ router.get('/:id', function(req, res, next) {
 });
 
 /* Delete a user by id */
-router.delete('/:id', function(req, res) {
+router.delete('/:id', function (req, res) {
   var user = users[req.params.id];
   delete users[req.params.id];
   res.status(204);
@@ -43,10 +77,10 @@ router.delete('/:id', function(req, res) {
 });
 
 /* Update a user by id */
-router.put('/:id', function(req, res, next) {
+router.put('/:id', function (req, res, next) {
   var user = req.body;
   if (user.id != req.params.id) {
-    return next(new Error('ID paramter does not match body'));
+    return next(new Error('ID parameter does not match body'));
   }
   users[user.id] = user;
   log.info('Updating user', user);

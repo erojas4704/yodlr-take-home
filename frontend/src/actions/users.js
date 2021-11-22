@@ -1,5 +1,5 @@
 import axios from "axios";
-import { LOAD_USER, LOGOUT_USER, SET_USER, LOAD_USERS_SUCCESS, CREATE_USER, LOAD_USER_SUCCESS, CREATE_USER_FAIL, LOAD_USER_FAIL, LOAD_USERS, LOAD_USERS_FAIL, CREATE_USER_SUCCESS, LOGIN_SUCCESS, LOGIN_FAIL, LOGIN } from "./types";
+import { LOAD_USER, LOGOUT_USER, SET_USER, LOAD_USERS_SUCCESS, CREATE_USER, LOAD_USER_SUCCESS, CREATE_USER_FAIL, LOAD_USER_FAIL, LOAD_USERS, LOAD_USERS_FAIL, CREATE_USER_SUCCESS, LOGIN_SUCCESS, LOGIN_FAIL, LOGIN, CANCEL_LOGIN } from "./types";
 
 const getAllUsersFromAPI = () => {
     return async dispatch => {
@@ -44,9 +44,12 @@ const createUser = (formData) => {
 
 const login = (formData) => {
     return async dispatch => {
-        dispatch({ type: LOGIN, payload: formData });
+        const cancelToken = axios.CancelToken;
+        const source = cancelToken.source();
+
+        dispatch({ type: LOGIN, payload: { ...formData, source } });
         try {
-            const res = await axios.post('/users/login', formData);
+            const res = await axios.post('/users/login', formData, { cancelToken: source.token });
             dispatch({ type: LOGIN_SUCCESS, payload: res.data });
             dispatch({ type: LOAD_USER_SUCCESS, payload: res.data.id });
             dispatch({ type: SET_USER, payload: res.data.id });
@@ -57,8 +60,16 @@ const login = (formData) => {
     };
 }
 
+const cancelLogin = () => {
+    return async (dispatch, getState) => {
+        const { source } = getState().login;
+        dispatch({ type: CANCEL_LOGIN });
+        source.cancel();
+    }
+}
+
 const logoutUser = () => {
     return { type: LOGOUT_USER };
 }
 
-export { getAllUsersFromAPI, getUserFromAPI, createUser, logoutUser, login };
+export { getAllUsersFromAPI, getUserFromAPI, createUser, logoutUser, login, cancelLogin };

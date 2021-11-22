@@ -1,14 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router";
-import { login } from "./actions/users";
+import { cancelLogin, login } from "./actions/users";
 import APIFeedback from "./APIFeedback";
 
 export default function LogIn() {
     const dispatch = useDispatch();
     const loginData = useSelector(state => state.login);
     const userData = useSelector(state => state.user);
+
+    useEffect( () => {
+        return () => {
+            // Cleanup. Cancel any pending API calls.
+            console.log("unloaded");
+            //dispatch(cancelLogin());
+        }
+    })
     
 
     const [form, setForm] = useState({
@@ -40,7 +48,7 @@ export default function LogIn() {
                 <Form.Label>Password</Form.Label>
                 <Form.Control onChange={handleChange} name="password" type="password" placeholder="Password" value={form.password} disabled={loginData.loading} />
             </Form.Group>
-            <Button variant="primary" type="submit" className="mb-3">Log In</Button>
+            <Button variant="primary" type="submit" className="mb-3" disabled={loginData.loading}>Log In</Button>
         </Form>
         <APIFeedback error={loginData.error} loading={loginData.loading} />
     </>
