@@ -13,6 +13,7 @@ export default function loginReducer(state = DEFAULT_STATE, action) {
                 ...state,
                 loading: true,
                 data: null,
+                error: "",
                 source: action.payload.source
             }
         case LOGIN_SUCCESS:

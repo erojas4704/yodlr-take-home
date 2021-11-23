@@ -51,25 +51,32 @@ const login = (formData) => {
         try {
             const res = await axios.post('/users/login', formData, { cancelToken: source.token });
             dispatch({ type: LOGIN_SUCCESS, payload: res.data });
-            dispatch({ type: LOAD_USER_SUCCESS, payload: res.data.id });
+            dispatch({ type: LOAD_USER_SUCCESS, payload: res.data });
             dispatch({ type: SET_USER, payload: res.data.id });
         } catch (err) {
             console.error(err);
-            dispatch({ type: LOGIN_FAIL, payload: err.response.data.message });
+            let message = err.response;
+            if (err.response) message = err.response.data.message;
+            dispatch({ type: LOGIN_FAIL, payload: message });
         }
     };
 }
 
 const cancelLogin = () => {
     return async (dispatch, getState) => {
-        const { source } = getState().login;
-        dispatch({ type: CANCEL_LOGIN });
-        source.cancel();
+        const { source, loading } = getState().login; //concern: Is it ok practice to access the state in an action?
+        if (loading && source) {
+            dispatch({ type: CANCEL_LOGIN });
+            source.cancel();
+        }
     }
 }
 
 const logoutUser = () => {
-    return { type: LOGOUT_USER };
+    return async dispatch => {
+        await axios.post('/users/logout');
+        dispatch({ type: LOGOUT_USER });
+    }
 }
 
 export { getAllUsersFromAPI, getUserFromAPI, createUser, logoutUser, login, cancelLogin };

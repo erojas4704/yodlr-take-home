@@ -10,14 +10,13 @@ export default function LogIn() {
     const loginData = useSelector(state => state.login);
     const userData = useSelector(state => state.user);
 
-    useEffect( () => {
+    useEffect(() => {
         return () => {
             // Cleanup. Cancel any pending API calls.
-            console.log("unloaded");
-            //dispatch(cancelLogin());
+            dispatch(cancelLogin());
         }
-    })
-    
+    }, [dispatch]);
+
 
     const [form, setForm] = useState({
         email: "",

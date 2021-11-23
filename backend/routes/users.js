@@ -1,11 +1,12 @@
+require("dotenv").config();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { requireAdmin, requireLogin } = require('../middleware/auth');
 var express = require('express');
 var router = express.Router();
 var _ = require('lodash');
 var logger = require('../lib/logger');
 var log = logger();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-require("dotenv").config();
 
 const WORK_FACTOR = Number(process.env.WORK_FACTOR);
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -13,8 +14,10 @@ const SECRET_KEY = process.env.SECRET_KEY;
 var users = require('../init_data.json').data;
 var curId = _.size(users);
 
-/* GET users listing. */
-router.get('/', function (req, res) {
+/* GET users listing. 
+  Requires admin privileges.
+  */
+router.get('/', requireLogin, requireAdmin, function (req, res) {
   res.json(_.toArray(users));
 });
 
@@ -23,10 +26,9 @@ router.post('/login', async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = _.find(users, { email });
-    if (!user) return next(new Error("Invalid username or password"));
+    await new Promise((resolve, reject) => { setTimeout(resolve, 1000) });
+    if (!user) throw new Error("1. Invalid username or password");
     const match = user.password === undefined || await bcrypt.compare(password, user.password);
-
-    //debugger;
     if (match) {
       const token = jwt.sign({
         id: user.id,
@@ -37,10 +39,19 @@ router.post('/login', async (req, res, next) => {
       return res.json(user); //TODO we never send passwords back to the client but for this demo why not
     }
 
-    return next(new Error("Invalid username or password"));
+    throw new Error("Invalid username or password");
   } catch (err) {
-    console.log(err);
-    log.error(err);
+    return next(err);
+  }
+});
+
+/* POST log out of user. */
+router.post('/logout', (req, res, next) => {
+  try {
+    res.clearCookie("session");
+    return res.json({});
+  } catch (err) {
+    return next(err);
   }
 });
 

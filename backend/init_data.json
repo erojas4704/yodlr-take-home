@@ -5,6 +5,6 @@
     "3" : { "id": 3, "email": "lilly@getyodlr.com", "firstName": "Lilly", "lastName": "Smith", "state": "pending"},
     "4" : { "id": 4, "email": "fred@getyodlr.com", "firstName": "Fred", "lastName": "Miles", "state": "pending"},
     "5" : { "id": 5, "email": "alex@getyodlr.com", "firstName": "Alexandra", "lastName": "Betts", "state": "pending"},
-    "7" : { "id": 5, "email": "a@a.a", "firstName": "Kenton", "lastName": "Bet", "state": "pending", "access": 3}
+    "6" : { "id": 6, "email": "a@a.a", "firstName": "Kenton", "lastName": "Bet", "state": "pending", "accessLevel": "admin"}
   }
 }

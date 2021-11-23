@@ -9,11 +9,9 @@ async function requireLogin(req, res, next) {
         if (!req.cookies['session']) throw new Error("No authorization.");
         const sessionCookie = String(req.cookies['session']).replace(/['"]+/g, '');
         const token = jwt.verify(sessionCookie, SECRET_KEY);
-
         req.session = {
-            sessionId: token.sessionId,
-            username: token.username,
-            userId: token.userId
+            userId: token.userData.id,
+            accessLevel: token.userData.accessLevel
         }
         return next();
     } catch (err) {
@@ -21,4 +19,14 @@ async function requireLogin(req, res, next) {
     }
 }
 
-module.exports = { requireLogin }
+async function requireAdmin(req, res, next) {
+    try {
+        if (!req.session || !req.session.userId) throw new Error("No authorization.");
+        if (req.session.accessLevel !== "admin") throw new Error("No authorization.");
+        return next();
+    } catch (err) {
+        return next(err);
+    }
+}
+
+module.exports = { requireLogin, requireAdmin };

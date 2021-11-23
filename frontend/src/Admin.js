@@ -18,7 +18,8 @@ export default function Admin() {
     return (
         <div>
             <APIFeedback loading={userData.loading} error={userData.error} />
-            <h3 className="my-3">Admin Panel</h3>
+
+            {!userData.error && <><h3 className="my-3">Users</h3>
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -26,6 +27,7 @@ export default function Admin() {
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,10 +37,11 @@ export default function Admin() {
                             <td>{user.firstName}</td>
                             <td>{user.lastName}</td>
                             <td>{user.email}</td>
+                            <td className={user.state === "pending"? "text-warning" : "text-success"}>{user.state}</td>
                         </tr>
                     ))}
                 </tbody>
-            </Table>
+            </Table> </>}
         </div>
     )
 }

@@ -4,8 +4,12 @@ import { NavLink } from "react-router-dom";
 import { logoutUser } from "./actions/users";
 
 export default function NavBar() {
+    const userData = useSelector(state => state.user.currentUser);
     const currentUserId = useSelector(state => state.user.currentUserId);
     const dispatch = useDispatch();
+
+    console.log(currentUserId);
+
 
     return (
         <Navbar bg="dark" variant="dark">
@@ -14,7 +18,7 @@ export default function NavBar() {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Nav className="me-auto">
                         <NavLink className="nav-link" to="/">Home</NavLink>
-                        <NavLink className="nav-link" to="admin">Admin</NavLink>
+                        {userData?.accessLevel === "admin" && <NavLink className="nav-link" to="admin">Admin</NavLink>}
                     </Nav>
                 </Navbar.Collapse>
                 <Navbar.Collapse className="justify-content-end">

@@ -11,14 +11,6 @@ import NavBar from "./NavBar";
 import LogIn from "./LogIn";
 
 function App() {
-  useEffect(() => {
-    const getUsers = async () => {
-      const ef = await axios.get("/users");
-      console.log(ef.data);
-    };
-    getUsers();
-  }, []);
-
   return (
     <Router>
       <NavBar />
