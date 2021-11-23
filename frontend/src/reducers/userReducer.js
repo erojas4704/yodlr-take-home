@@ -7,7 +7,9 @@ const DEFAULT_STATE = {
 }
 
 //TODO user.users redundant. 
+//Reducer is too long
 //TODO seperate into more reducers
+//TODO edit state in another reducer OK practice? feasible?
 export default function userReducer(state = DEFAULT_STATE, action) {
     switch (action.type) {
         case SET_USER:
